@@ -1,0 +1,93 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+	
+	<changeSet author="tiago.velloso@gmail.com" id="1">
+		
+		<createSequence sequenceName="SQ_RESTAURANT" cacheSize="1" incrementBy="1" startValue="1" />
+		
+		<createTable tableName="RESTAURANT">
+			<column name="ID" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="LOGIN" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		
+		<addPrimaryKey columnNames="ID" constraintName="PK_RESTAURANT" tableName="RESTAURANT" />
+		
+		<addUniqueConstraint columnNames="LOGIN" constraintName="UC_RESTAURANT" tableName="RESTAURANT" />
+		
+		
+		<createSequence sequenceName="SQ_UNAVAILABILITY" cacheSize="1" incrementBy="1" startValue="1" />
+		
+		<createTable tableName="UNAVAILABILITY">
+			<column name="ID" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="RESTAURANT" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="REASON" type="CHAR(1)">
+				<constraints nullable="false" />
+			</column>
+			<column name="START" type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="END" type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="CREATION" type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		
+		<addPrimaryKey columnNames="ID" constraintName="PK_UNAVAILABILITY" tableName="UNAVAILABILITY" />
+		
+		<addForeignKeyConstraint baseColumnNames="RESTAURANT"
+			baseTableName="UNAVAILABILITY" constraintName="FK_UNAVAILABILITY"
+			deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+			onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="RESTAURANT" />
+		
+		<createSequence sequenceName="SQ_OFFLINE_LOG" cacheSize="1" incrementBy="1" startValue="1" />
+		
+		<createTable tableName="OFFLINE_LOG">
+			
+			<column name="ID" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="RESTAURANT" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="START" type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="END" type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="OFFLINE_TIME" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="CREATION" type="TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			
+		</createTable>
+		
+		<addPrimaryKey columnNames="ID" constraintName="PK_OFFLINE_LOG" tableName="OFFLINE_LOG" />
+		
+		<addForeignKeyConstraint baseColumnNames="RESTAURANT"
+			baseTableName="OFFLINE_LOG" constraintName="FK_OFFLINE_LOG"
+			deferrable="false" initiallyDeferred="false" onDelete="RESTRICT"
+			onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="RESTAURANT" />
+		
+		<createIndex tableName="OFFLINE_LOG" indexName="IX_OFFLINE_LOG">
+			<column name="START" type="TIMESTAMP" />
+			<column name="END" type="TIMESTAMP" />
+		</createIndex>
+		
+	</changeSet>
+	
+</databaseChangeLog>
