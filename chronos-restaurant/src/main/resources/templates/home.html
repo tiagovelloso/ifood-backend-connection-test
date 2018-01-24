@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="layout">
+<head></head>
+<body>
+	<div layout:fragment="content">
+		<div>
+			<h2>Unavailabilities <button class="btn btn-primary btn-sm pull-right" th:onclick="'window.location.href = \'' + @{/unavailability} + '\''"><i class="glyphicon glyphicon-plus"></i> Schedule</button></h2>
+		</div>
+		<br/>
+		
+		<th:block th:replace="fragments/messages :: messages" />
+		
+		<table class="table">
+			<tr>
+				<th>Start</th>
+				<th>End</th>
+				<th>Reason</th>
+				<th>Remove</th>
+			</tr>
+			<th:block th:if="${unavailabilities.isEmpty()}">
+				<tr>
+					<td colspan="4" class="text-center">There are no  unavailabilities to display</td>
+				</tr>
+			</th:block>
+			<th:block th:each="unavailability : ${unavailabilities}">
+				<tr>
+					<td th:text="${localDateTimeFormat.format(unavailability.start)}"></td>
+					<td th:text="${localDateTimeFormat.format(unavailability.end)}"></td>
+					<td th:text="${@appProps.reasons.get(unavailability.reason)}"></td>
+					<td><i class="glyphicon glyphicon-remove-circle" style="color:#ff6b68;font-size:18px;" th:onclick="'removeUnavailability(' + ${unavailability.id} + ')'"></i></td>
+				</tr>
+			</th:block>
+		</table>
+		
+		<form id="frmDeleteUnavailability" method="POST" th:action="@{/unavailability/delete}" style="display:none">
+			<input type="hidden" id="deleteUnavailabilityId" name="id" />
+		</form>
+		
+		<script th:inline="javascript">
+			function removeUnavailability(id) {
+				if (confirm('Are you sure?')) {
+					$('#deleteUnavailabilityId').val(id);
+					$('#frmDeleteUnavailability').submit();
+				};
+			}
+		</script>
+	</div>
+</body>
+</html>
